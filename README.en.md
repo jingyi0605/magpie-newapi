@@ -92,12 +92,13 @@ magpie plugin options magpie-newapi off      # back to the single record
 
 | field | meaning |
 | --- | --- |
-| `id` | provider id (lower-case letters/digits/`-`/`_`, ≤40); also the `<id>/<model>` prefix and the row's default name |
+| `id` | provider id (lower-case letters/digits/`-`/`_`, ≤40); also the `<id>/<model>` prefix |
+| `name` | the row's name (any language); defaults to `id` |
 | `url` | the site address. **Optional** — without it the provider only defines a name + model combination, and each account supplies its own address at sign-in |
 | `models` | only expose matching models: exact id, `claude-*` prefix, or `/regex/` |
 | `exclude` | hide matching models (wins over `models`) |
 
-> A row's name defaults to its id (e.g. `claude-pool`). Rename it in magpie's provider settings, which stores each provider's name separately. The plugin no longer sets a name through `config`: the community check requires a `config` to also give `npm` and a non-empty `models`, and this plugin's models are fetched per account.
+The plugin names the row: the default provider is **New API**, and `sites[].name` names the others (any language). To rename the single default provider, declare one site — even a single entry.
 
 ## Protocols
 
