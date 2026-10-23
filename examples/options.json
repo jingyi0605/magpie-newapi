@@ -1,0 +1,6 @@
+{
+  "sites": [
+    { "id": "relay-a", "name": "Relay A", "url": "https://a.example.com" },
+    { "id": "relay-b", "name": "Relay B", "url": "https://b.example.com" }
+  ]
+}
