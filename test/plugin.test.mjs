@@ -260,11 +260,13 @@ describe("account model", () => {
     assert.equal(s.peek().key, RELAY_KEY)
   })
 
-  it("sites option makes each site its own provider", async () => {
+  it("each exported function returns a provider (community check)", async () => {
     const h = await NewapiSite1(store(), { sites: [{ id: "myrelay", name: "My Relay", url: base }] })
     assert.equal(h.auth.provider, "myrelay")
-    const cfg = {}
-    h.config(cfg)
-    assert.equal(cfg.provider.myrelay.name, "My Relay")
+    // an unconfigured slot offers the first provider rather than nothing, so
+    // magpie's check sees an auth hook everywhere; magpie merges by id
+    const empty = await NewapiSite1(store(), { sites: [] })
+    assert.equal(empty.auth.provider, _internal.ID)
+    assert.ok(Array.isArray(empty.auth.methods) && empty.auth.methods.length)
   })
 })

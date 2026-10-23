@@ -675,26 +675,32 @@ function hooks(client, id, site) {
         }
       },
     },
-    // a friendly name for the row; a name the user's own config gives stays
-    config(cfg) {
-      cfg.provider ??= {}
-      const was = cfg.provider[id] ?? {}
-      cfg.provider[id] = { ...was, name: was.name ?? (site?.name ?? "New API") }
-    },
   }
 }
 
-// The one "newapi" provider serves ad-hoc instances (each sign-in carries its
-// own address). When the options list sites, those sites become the providers
-// instead, so this one steps aside rather than leaving an empty record.
+// The provider a plugin function offers: its own site when the options list
+// one at that slot, else the first site, else the ad-hoc "newapi" provider
+// (whose sign-ins each carry their own address).
+//
+// Every exported function must return a provider, because magpie's community
+// check requires each one to have an auth hook. An unconfigured slot therefore
+// offers the same provider as the first, and magpie merges providers by id, so
+// no empty rows appear.
+function offered(sites, i) {
+  return sites[i] ?? sites[0] ?? null
+}
+
+function providerFor(client, sites, i) {
+  const site = offered(sites, i)
+  return hooks(client, site?.id ?? ID, site)
+}
+
 export async function NewapiPlugin({ client } = {}, options) {
-  if (sitesOf(options, false).length) return {}
-  return hooks(client, ID)
+  return providerFor(client, sitesOf(options, false), 0)
 }
 
 const slot = (i) => async ({ client } = {}, options) => {
-  const site = sitesOf(options, i === 0)[i]
-  return site ? hooks(client, site.id, site) : {}
+  return providerFor(client, sitesOf(options, i === 0), i)
 }
 
 export const NewapiSite1 = slot(0)

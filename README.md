@@ -116,13 +116,14 @@ magpie plugin options magpie-newapi off      # 清掉，回到单条记录
 
 | 字段 | 含义 |
 | --- | --- |
-| `id` | provider id（小写字母/数字/`-`/`_`，≤40）。也是 agent 里 `<id>/<model>` 的前缀 |
-| `name` | 这一行显示的名字；不写就用 `id` |
+| `id` | provider id（小写字母/数字/`-`/`_`，≤40）。也是 agent 里 `<id>/<model>` 的前缀，**同时是这一行默认显示的名字** |
 | `url` | 站点地址。**可省略**——省略时这个 provider 只定义「名称 + 模型组合」，每个账号登录时自己填地址 |
 | `models` | 只暴露匹配的模型。支持精确 id、`claude-*` 前缀、`/正则/` |
 | `exclude` | 排除匹配的模型（优先级高于 `models`） |
 
 所以想要「同一个站点，Claude 一行、Codex 一行」，就是两条 `sites`（可以同一个 `url`，也可以都不写 `url` 让账号自己带地址）。
+
+> 显示名默认就是 `id`（例如 `claude-pool`）。想换成中文或别的名字，在 magpie 的供应商设置里改「名称」即可——magpie 会把每个 provider 的名字单独存下来。插件不再通过 `config` 提供名字，因为社区仓库的检查要求 `config` 必须同时给出 `npm` 和非空 `models`，而本插件的模型是按账号动态获取的。
 
 > magpie 在加载插件时就固定了 provider 列表，插件无法在运行时新增记录，所以「多条记录」必须用 `sites` 声明。站点模式下登录不再询问地址（除非该 site 没写 `url`）。
 
